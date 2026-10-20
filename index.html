@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="vi" class="dark scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suaw Client 1.21.11 - Ultimate Minecraft Client</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            red: '#ff2a2a',
+                            darkRed: '#990000',
+                            accent: '#ff4d4d',
+                            bg: '#0c0d10',
+                            card: '#14161d',
+                            glass: 'rgba(20, 22, 29, 0.75)'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace']
+                    },
+                    animation: {
+                        'pulse-glow': 'pulseGlow 2s infinite alternate',
+                        'float': 'float 3s ease-in-out infinite'
+                    },
+                    keyframes: {
+                        pulseGlow: {
+                            '0%': { boxShadow: '0 0 15px rgba(255, 42, 42, 0.4)' },
+                            '100%': { boxShadow: '0 0 35px rgba(255, 42, 42, 0.8)' }
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-10px)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Font Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0c0d10;
+            color: #f3f4f6;
+            overflow-x: hidden;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0c0d10;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #272a37;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #ff2a2a;
+        }
+        .glow-text {
+            text-shadow: 0 0 12px rgba(255, 42, 42, 0.6);
+        }
+        .glass-panel {
+            background: rgba(18, 20, 28, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .mc-switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+        }
+        .mc-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .mc-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #2b3040;
+            transition: .3s;
+            border-radius: 24px;
+        }
+        .mc-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+        input:checked + .mc-slider {
+            background-color: #3b82f6;
+        }
+        input:checked + .mc-slider:before {
+            transform: translateX(20px);
+        }
+    </style>
+</head>
+<body class="selection:bg-brand-red selection:text-white">
+
+    <!-- Header Navigation -->
+    <header class="fixed top-0 left-0 w-full z-50 glass-panel border-b border-gray-800/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Brand Logo -->
+            <a href="#" class="flex items-center gap-3 group">
+                <div class="relative w-10 h-10 flex items-center justify-center bg-gray-900 border border-brand-red/40 rounded-xl group-hover:border-brand-red transition-colors shadow-lg">
+                    <!-- Red Crown SVG Icon (Matched from user's icon) -->
+                    <svg class="w-7 h-7 text-brand-red filter drop-shadow-[0_0_6px_rgba(255,42,42,0.8)]" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z" />
+                    </svg>
+                </div>
+                <div>
+                    <span class="text-xl font-black tracking-wider text-white group-hover:text-brand-red transition-colors flex items-center gap-1.5">
+                        SUAW <span class="text-brand-red font-light">CLIENT</span>
+                    </span>
+                    <span class="block text-[10px] font-mono text-gray-400 -mt-1">VERSION 1.21.11</span>
+                </div>
+            </a>
+
+            <!-- Desktop Menu -->
+            <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-gray-300">
+                <a href="#hero" class="hover:text-brand-red transition-colors">Trang Chủ</a>
+                <a href="#features" class="hover:text-brand-red transition-colors">Tính Năng</a>
+                <a href="#demo" class="hover:text-brand-red transition-colors">Demo GUI</a>
+                <a href="#download" class="hover:text-brand-red transition-colors">Tải Về</a>
+            </nav>
+
+            <!-- Action CTA Button -->
+            <div class="hidden sm:flex items-center gap-4">
+                <a href="#download" class="px-5 py-2.5 rounded-xl text-sm font-semibold text-white bg-brand-red hover:bg-red-600 transition-all transform hover:-translate-y-0.5 shadow-lg shadow-brand-red/30 flex items-center gap-2">
+                    <i class="fa-solid fa-download"></i> Tải Client v1.0.0
+                </a>
+            </div>
+
+            <!-- Mobile Hamburger Button -->
+            <button id="menu-btn" class="md:hidden text-gray-300 hover:text-white text-2xl focus:outline-none">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Menu Dropdown -->
+        <div id="mobile-menu" class="hidden md:hidden bg-brand-bg/95 border-b border-gray-800 px-6 py-4 space-y-3">
+            <a href="#hero" class="block text-gray-300 hover:text-brand-red py-2">Trang Chủ</a>
+            <a href="#features" class="block text-gray-300 hover:text-brand-red py-2">Tính Năng</a>
+            <a href="#demo" class="block text-gray-300 hover:text-brand-red py-2">Demo GUI</a>
+            <a href="#download" class="block text-gray-300 hover:text-brand-red py-2">Tải Về</a>
+            <a href="#download" class="block w-full text-center py-3 bg-brand-red text-white font-semibold rounded-xl">Tải ngay v1.0.0</a>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="hero" class="relative pt-32 pb-20 md:pt-44 md:pb-32 overflow-hidden flex items-center justify-center min-h-screen">
+        <!-- Background Lights & Grid -->
+        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-brand-darkRed/20 via-brand-bg to-brand-bg opacity-80 pointer-events-none"></div>
+        <div class="absolute inset-0 bg-[linear-gradient(to_right,#1f293710_1px,transparent_1px),linear-gradient(to_bottom,#1f293710_1px,transparent_1px)] bg-[size:4rem_4rem] pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+            <!-- Badge -->
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-panel border border-brand-red/30 text-xs font-mono text-brand-accent mb-8 shadow-inner animate-pulse-glow">
+                <span class="w-2 h-2 rounded-full bg-brand-red animate-ping"></span>
+                <span class="font-semibold">SUAW CLIENT v1.0.0</span> • Hỗ trợ Minecraft 1.21.11
+            </div>
+
+            <!-- Title -->
+            <h1 class="text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight text-white mb-6 leading-tight">
+                Tối Ưu Hoá FPS & Trải Nghiệm <br class="hidden sm:block"/>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-red via-red-400 to-red-600 glow-text">PVP Minecraft Đỉnh Cao</span>
+            </h1>
+
+            <p class="max-w-3xl mx-auto text-base sm:text-lg text-gray-400 mb-10 leading-relaxed">
+                Suaw Client mang lại sự mượt mà tuyệt đối với giao diện HUD sang trọng, tùy biến cực cao, hỗ trợ đầy đủ các Mod PVP chuẩn chiến đấu cho phiên bản Minecraft 1.21.11.
+            </p>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <a href="#download" class="w-full sm:w-auto px-8 py-4 rounded-xl font-bold text-white bg-gradient-to-r from-brand-red to-red-700 hover:from-red-600 hover:to-red-800 shadow-xl shadow-brand-red/30 transition-all transform hover:-translate-y-1 flex items-center justify-center gap-3 text-base">
+                    <i class="fa-solid fa-download text-lg"></i> Tải Về Suaw Client (JAR)
+                </a>
+                <a href="#demo" class="w-full sm:w-auto px-8 py-4 rounded-xl font-semibold text-gray-200 glass-panel hover:bg-gray-800/80 hover:text-white transition-all transform hover:-translate-y-1 flex items-center justify-center gap-3 text-base border border-gray-700">
+                    <i class="fa-solid fa-gamepad"></i> Xem Giao Diện Menu
+                </a>
+            </div>
+
+            <!-- Hero Feature Cards Quick View -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-16 max-w-4xl mx-auto text-left">
+                <div class="glass-panel p-4 rounded-xl border border-gray-800">
+                    <div class="text-brand-red font-mono font-bold text-lg">1.21.11</div>
+                    <div class="text-xs text-gray-400 mt-1">Hỗ trợ phiên bản mới nhất</div>
+                </div>
+                <div class="glass-panel p-4 rounded-xl border border-gray-800">
+                    <div class="text-brand-red font-mono font-bold text-lg">+200% FPS</div>
+                    <div class="text-xs text-gray-400 mt-1">Tối ưu hiệu năng vượt trội</div>
+                </div>
+                <div class="glass-panel p-4 rounded-xl border border-gray-800">
+                    <div class="text-brand-red font-mono font-bold text-lg">Clean HUD</div>
+                    <div class="text-xs text-gray-400 mt-1">Menu HUD tùy biến mượt mà</div>
+                </div>
+                <div class="glass-panel p-4 rounded-xl border border-gray-800">
+                    <div class="text-brand-red font-mono font-bold text-lg">100% Free</div>
+                    <div class="text-xs text-gray-400 mt-1">Tải về & trải nghiệm miễn phí</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-20 relative bg-brand-bg/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-xs font-mono text-brand-red tracking-widest uppercase mb-2">TÍNH NĂNG NỔI BẬT</h2>
+                <p class="text-3xl sm:text-4xl font-extrabold text-white">Trang Bị Đầy Đủ Cho Các Chiến Binh PVP</p>
+                <p class="text-gray-400 mt-3 max-w-2xl mx-auto text-sm">Danh sách các mô-đun được tích hợp sẵn trong Suaw Client 1.21.11 (Trích xuất trực tiếp từ Menu Game).</p>
+            </div>
+
+            <!-- Category Groups -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Group 1: HUD Mods -->
+                <div class="glass-panel p-6 rounded-2xl border border-gray-800 hover:border-brand-red/40 transition-all">
+                    <div class="w-12 h-12 rounded-xl bg-brand-red/10 border border-brand-red/30 flex items-center justify-center text-brand-red text-xl mb-5">
+                        <i class="fa-solid fa-desktop"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-4 flex items-center justify-between">
+                        HUD Features <span class="text-xs font-mono text-brand-red bg-brand-red/10 px-2 py-1 rounded">GUI Mods</span>
+                    </h3>
+                    <ul class="space-y-3.5 text-sm text-gray-300">
+                        <li class="flex items-center gap-3">
+                            <i class="fa-solid fa-check text-brand-red text-xs"></i>
+                            <div>
+                                <span class="font-semibold text-white">Keystrokes:</span>
+                                <p class="text-xs text-gray-400">Hiển thị phím WASD, chuột trái/phải, space và CPS</p>
+                            </div>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fa-solid fa-check text-brand-red text-xs"></i>
+                            <div>
+                                <span class="font-semibold text-white">FPS + Ping:</span>
+                                <p class="text-xs text-gray-400">Theo dõi chỉ số mượt mà và giật lag theo thời gian thực</p>
+                            </div>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fa-solid fa-check text-brand-red text-xs"></i>
+                            <div>
+                                <span class="font-semibold text-white">Music Player:</span>
+                                <p class="text-xs text-gray-400">Trình phát nhạc tích hợp thư giãn khi chơi game</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Group 2: PVP Mods -->
+                <div class="glass-panel p-6 rounded-2xl border border-gray-800 hover:border-brand-red/40 transition-all relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-brand-red/5 rounded-full blur-2xl"></div>
+                    <div class="w-12 h-12 rounded-xl bg-brand-red/10 border border-brand-red/30 flex items-center justify-center text-brand-red text-xl mb-5">
+                        <i class="fa-solid fa-swords"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-4 flex items-center justify-between">
+                        PVP Modules <span class="text-xs font-mono text-brand-red bg-brand-red/10 px-2 py-1 rounded">Combat</span>
+                    </h3>
+                    <ul class="space-y-3.5 text-sm text-gray-300">
+                        <li class="flex items-center gap-3">
+                            <i class="fa-solid fa-check text-brand-red text-xs"></i>
+                            <div>
+                                <span class="font-semibold text-white">PVP HUD:</span>
+                                <p class="text-xs text-gray-400">Hiển thị đếm Combo, Reach distance chi tiết</p>
+                            </div>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fa-solid fa-check text-brand-red text-xs"></i>
+                            <div>
+                                <span class="font-semibold text-white">Toggle Sprint:</span>
+                                <p class="text-xs text-gray-400">Tự động chạy nhanh tiện lợi không hoảng phím</p>
+                            </div>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fa-solid fa-check text-brand-red text-xs"></i>
+                            <div>
+                                <span class="font-semibold text-white">Free Look & Free Cam:</span>
+                                <p class="text-xs text-gray-400">Xoay góc nhìn 360 độ tự do mà không đổi hướng đi</p>
+                            </div>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fa-solid fa-check text-brand-red text-xs"></i>
+                            <div>
+                                <span class="font-semibold text-white">Kill Effect:</span>
+                                <p class="text-xs text-gray-400">Hiệu ứng đẹp mắt khi tiêu diệt đối thủ</p>
+                            </div>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fa-solid fa-check text-brand-red text-xs"></i>
+                            <div>
+                                <span class="font-semibold text-white">Fake Mace & Fake Elytra:</span>
+                                <p class="text-xs text-gray-400">Mô phỏng vũ khí & cánh thời thượng</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Group 3: Visual & Settings -->
+                <div class="glass-panel p-6 rounded-2xl border border-gray-800 hover:border-brand-red/40 transition-all">
+                    <div class="w-12 h-12 rounded-xl bg-brand-red/10 border border-brand-red/30 flex items-center justify-center text-brand-red text-xl mb-5">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-4 flex items-center justify-between">
+                        Visual & Effects <span class="text-xs font-mono text-brand-red bg-brand-red/10 px-2 py-1 rounded">Graphics</span>
+                    </h3>
+                    <ul class="space-y-3.5 text-sm text-gray-300">
+                        <li class="flex items-center gap-3">
+                            <i class="fa-solid fa-check text-brand-red text-xs"></i>
+                            <div>
+                                <span class="font-semibold text-white">Aura & Visual Effects:</span>
+                                <p class="text-xs text-gray-400">Tăng cường hiệu ứng hạt, vòng hào quang xung quanh nhân vật</p>
+                            </div>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fa-solid fa-check text-brand-red text-xs"></i>
+                            <div>
+                                <span class="font-semibold text-white">HUD Editor:</span>
+                                <p class="text-xs text-gray-400">Chỉnh vị trí phím, kích thước trực quan chỉ bằng kéo thả</p>
+                            </div>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fa-solid fa-check text-brand-red text-xs"></i>
+                            <div>
+                                <span class="font-semibold text-white">Tùy chỉnh bo góc & độ trong suốt:</span>
+                                <p class="text-xs text-gray-400">Slider điều chỉnh Corner Radius và Background opacity</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Interactive GUI Demo Simulation -->
+    <section id="demo" class="py-20 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-xs font-mono text-brand-red tracking-widest uppercase mb-2">DEMO HÌNH ẢNH THỰC TẾ</h2>
+                <p class="text-3xl sm:text-4xl font-extrabold text-white">Giao Diện In-Game Menu Suaw Client</p>
+                <p class="text-gray-400 mt-2 text-sm">Mô phỏng bảng điều khiển thực tế của client khi mở trong Minecraft (Right Shift)</p>
+            </div>
+
+            <!-- Simulated Minecraft Screen HUD Container -->
+            <div class="relative max-w-5xl mx-auto rounded-2xl overflow-hidden border border-gray-800 shadow-2xl bg-black">
+                <!-- Background Image Preview (Simulated In-Game Bedwars Scene) -->
+                <div class="relative min-h-[520px] bg-cover bg-center flex items-center justify-center p-4 sm:p-8" 
+                     style="background-image: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.65)), url('https://images.unsplash.com/photo-1627856013091-fed6e4e30025?auto=format&fit=crop&w=1600&q=80');">
+                    
+                    <!-- Simulated Keystrokes Overlay on Top-Left -->
+                    <div class="absolute top-6 left-6 p-3 rounded-lg bg-black/60 backdrop-blur border border-white/10 text-xs font-mono space-y-1 hidden sm:block">
+                        <div class="text-green-400 font-bold">FPS: 320</div>
+                        <div class="text-cyan-400 font-bold">PING: 2ms</div>
+                        <div class="text-gray-300 text-[10px]">Walking (Toggled)</div>
+                        <div class="pt-2 grid grid-cols-3 gap-1 w-20 text-center text-white">
+                            <div></div><div class="bg-white/20 p-1 rounded">W</div><div></div>
+                            <div class="bg-white/20 p-1 rounded">A</div><div class="bg-white/20 p-1 rounded">S</div><div class="bg-white/20 p-1 rounded">D</div>
+                            <div class="col-span-1 bg-white/20 p-1 rounded">LMB</div><div></div><div class="col-span-1 bg-white/20 p-1 rounded">RMB</div>
+                        </div>
+                    </div>
+
+                    <!-- Main Suaw Client Settings GUI Window (Matching Screenshot closely) -->
+                    <div id="gui-box" class="w-full max-w-3xl rounded-xl bg-[#121620]/90 backdrop-blur-md border border-white/10 shadow-2xl p-5 text-gray-200 transition-all">
+                        
+                        <!-- Top Header Bar -->
+                        <div class="flex items-center justify-between border-b border-gray-700/50 pb-3 mb-4">
+                            <div class="flex items-center gap-2">
+                                <span class="font-bold text-brand-red tracking-wider font-mono">SUAW CLIENT</span>
+                                <span class="text-xs font-mono text-gray-400">1.21.11</span>
+                            </div>
+                            <button class="px-4 py-1.5 bg-blue-600/80 hover:bg-blue-600 text-white rounded text-xs font-semibold tracking-wide transition-colors shadow">
+                                HUD Editor
+                            </button>
+                        </div>
+
+                        <!-- Sidebar + Content Body -->
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-6 min-h-[320px]">
+                            <!-- Left Sidebar Navigation -->
+                            <div class="md:col-span-4 border-r border-gray-700/50 pr-4 space-y-4 text-xs">
+                                <div>
+                                    <div class="text-[10px] uppercase font-mono text-gray-400 mb-2 tracking-wider">HUD</div>
+                                    <div class="space-y-1">
+                                        <div class="flex justify-between items-center px-3 py-1.5 rounded bg-blue-600/30 border border-blue-500/40 text-white font-medium cursor-pointer">
+                                            <span>Keystrokes</span>
+                                            <label class="mc-switch scale-75"><input type="checkbox" checked><span class="mc-slider"></span></label>
+                                        </div>
+                                        <div class="flex justify-between items-center px-3 py-1.5 rounded hover:bg-white/5 cursor-pointer">
+                                            <span>FPS + Ping</span>
+                                            <label class="mc-switch scale-75"><input type="checkbox" checked><span class="mc-slider"></span></label>
+                                        </div>
+                                        <div class="flex justify-between items-center px-3 py-1.5 rounded hover:bg-white/5 cursor-pointer">
+                                            <span>Music</span>
+                                            <label class="mc-switch scale-75"><input type="checkbox" checked><span class="mc-slider"></span></label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <div class="text-[10px] uppercase font-mono text-gray-400 mb-2 tracking-wider">PVP</div>
+                                    <div class="space-y-1">
+                                        <div class="flex justify-between items-center px-3 py-1.5 rounded hover:bg-white/5 cursor-pointer">
+                                            <span>PvP HUD</span>
+                                            <label class="mc-switch scale-75"><input type="checkbox" checked><span class="mc-slider"></span></label>
+                                        </div>
+                                        <div class="flex justify-between items-center px-3 py-1.5 rounded hover:bg-white/5 cursor-pointer">
+                                            <span>Toggle Sprint</span>
+                                            <label class="mc-switch scale-75"><input type="checkbox" checked><span class="mc-slider"></span></label>
+                                        </div>
+                                        <div class="flex justify-between items-center px-3 py-1.5 rounded hover:bg-white/5 cursor-pointer">
+                                            <span>Free Look</span>
+                                            <label class="mc-switch scale-75"><input type="checkbox" checked><span class="mc-slider"></span></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Right Options Detail -->
+                            <div class="md:col-span-8 space-y-5 text-xs">
+                                <div>
+                                    <h4 class="text-sm font-bold text-white mb-0.5">Keystrokes</h4>
+                                    <p class="text-[11px] text-gray-400">Hien thi phim WASD, chuot trai/phai, space va CPS.</p>
+                                </div>
+
+                                <div class="space-y-3 pt-2">
+                                    <div class="flex items-center justify-between bg-white/5 p-2.5 rounded border border-white/5">
+                                        <span class="font-medium">Enabled</span>
+                                        <label class="mc-switch scale-90"><input type="checkbox" checked><span class="mc-slider"></span></label>
+                                    </div>
+                                    <div class="flex items-center justify-between bg-white/5 p-2.5 rounded border border-white/5">
+                                        <span class="font-medium">Mouse Buttons</span>
+                                        <label class="mc-switch scale-90"><input type="checkbox" checked><span class="mc-slider"></span></label>
+                                    </div>
+                                    <div class="flex items-center justify-between bg-white/5 p-2.5 rounded border border-white/5">
+                                        <span class="font-medium">Show CPS</span>
+                                        <label class="mc-switch scale-90"><input type="checkbox"><span class="mc-slider"></span></label>
+                                    </div>
+                                    <div class="flex items-center justify-between bg-white/5 p-2.5 rounded border border-white/5">
+                                        <span class="font-medium">Space Bar</span>
+                                        <label class="mc-switch scale-90"><input type="checkbox" checked><span class="mc-slider"></span></label>
+                                    </div>
+
+                                    <!-- Sliders -->
+                                    <div class="space-y-2 pt-2">
+                                        <div class="flex items-center justify-between">
+                                            <span class="font-medium">Background</span>
+                                            <div class="flex items-center gap-3 w-1/2">
+                                                <input type="range" min="0" max="100" value="20" class="w-full accent-blue-500 bg-gray-700 h-1.5 rounded cursor-pointer">
+                                                <span class="font-mono text-[11px] text-gray-300 w-8 text-right">20%</span>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center justify-between">
+                                            <span class="font-medium">Corner Radius</span>
+                                            <div class="flex items-center gap-3 w-1/2">
+                                                <input type="range" min="0" max="20" value="5" class="w-full accent-blue-500 bg-gray-700 h-1.5 rounded cursor-pointer">
+                                                <span class="font-mono text-[11px] text-gray-300 w-8 text-right">5px</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Footer Info bar -->
+                        <div class="mt-4 pt-3 border-t border-gray-800 text-[11px] font-mono text-gray-400 text-center">
+                            Right Shift: dong ! Chuot phai tren Mode: lui ! Cuon chuot de xem them
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Download Section -->
+    <section id="download" class="py-20 relative bg-brand-bg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="glass-panel rounded-3xl p-8 sm:p-12 border border-brand-red/30 shadow-2xl relative overflow-hidden">
+                <!-- Background Accent Blur -->
+                <div class="absolute top-0 right-0 w-96 h-96 bg-brand-red/10 rounded-full blur-3xl pointer-events-none"></div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
+                    <div class="lg:col-span-7 space-y-6">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-red/10 text-brand-red font-mono text-xs border border-brand-red/20">
+                            <i class="fa-solid fa-box-archive"></i> Tải Về Trực Tiếp
+                        </div>
+                        <h2 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
+                            Sẵn Sàng Trải Nghiệm <span class="text-brand-red">Suaw Client</span> Ngay?
+                        </h2>
+                        <p class="text-gray-300 text-sm sm:text-base leading-relaxed">
+                            Tải về bản dựng mới nhất phiên bản 1.21.11. Cài đặt nhanh chóng, tương thích hoàn toàn với TLauncher, SKLauncher, Prism Launcher và Minecraft Official.
+                        </p>
+
+                        <!-- Download Files Card List -->
+                        <div class="space-y-3 pt-2">
+                            <!-- Main Client Jar -->
+                            <div class="p-4 rounded-xl bg-gray-900/80 border border-gray-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-lg bg-brand-red/20 flex items-center justify-center text-brand-red font-bold">
+                                        <i class="fa-solid fa-file-code"></i>
+                                    </div>
+                                    <div>
+                                        <div class="text-white font-mono text-sm font-semibold">suaw-client-1.0.0.jar</div>
+                                        <div class="text-xs text-gray-400">Phiên bản chính thức • 1.21.11 • Compressed Executable</div>
+                                    </div>
+                                </div>
+                                <button onclick="downloadFile('suaw-client-1.0.0.jar')" class="w-full sm:w-auto px-5 py-2.5 rounded-lg bg-brand-red hover:bg-red-600 text-white font-semibold text-xs transition-colors flex items-center justify-center gap-2">
+                                    <i class="fa-solid fa-download"></i> Tải File .JAR
+                                </button>
+                            </div>
+
+                            <!-- Sources Jar -->
+                            <div class="p-4 rounded-xl bg-gray-900/80 border border-gray-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center text-blue-400 font-bold">
+                                        <i class="fa-solid fa-code"></i>
+                                    </div>
+                                    <div>
+                                        <div class="text-white font-mono text-sm font-semibold">suaw-client-1.0.0-sources.jar</div>
+                                        <div class="text-xs text-gray-400">Mã nguồn mã hóa/phát triển • Sources Package</div>
+                                    </div>
+                                </div>
+                                <button onclick="downloadFile('suaw-client-1.0.0-sources.jar')" class="w-full sm:w-auto px-5 py-2.5 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-200 font-semibold text-xs transition-colors flex items-center justify-center gap-2 border border-gray-700">
+                                    <i class="fa-solid fa-download"></i> Tải Sources .JAR
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step-by-Step Installation Guide -->
+                    <div class="lg:col-span-5 bg-gray-900/90 p-6 sm:p-8 rounded-2xl border border-gray-800 space-y-4">
+                        <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-list-check text-brand-red"></i> Hướng Dẫn Cài Đặt (3 Bước)
+                        </h3>
+                        <ol class="space-y-4 text-xs text-gray-300 font-sans">
+                            <li class="flex items-start gap-3">
+                                <span class="w-6 h-6 rounded-full bg-brand-red/20 text-brand-red font-mono font-bold flex items-center justify-center shrink-0">1</span>
+                                <div>
+                                    <span class="font-semibold text-white">Tải về tập tin Client</span>
+                                    <p class="text-gray-400">Nhấn nút tải file <code class="text-brand-accent">suaw-client-1.0.0.jar</code> ở trên.</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="w-6 h-6 rounded-full bg-brand-red/20 text-brand-red font-mono font-bold flex items-center justify-center shrink-0">2</span>
+                                <div>
+                                    <span class="font-semibold text-white">Thêm vào thư mục mods</span>
+                                    <p class="text-gray-400">Mở <code class="text-brand-accent">%appdata%\.minecraft\mods</code> và dán file `.jar` vừa tải vào.</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="w-6 h-6 rounded-full bg-brand-red/20 text-brand-red font-mono font-bold flex items-center justify-center shrink-0">3</span>
+                                <div>
+                                    <span class="font-semibold text-white">Mở Game & Trải Nghiệm</span>
+                                    <p class="text-gray-400">Khởi động Minecraft v1.21.11 và bấm phím <kbd class="px-1.5 py-0.5 bg-gray-800 border border-gray-700 rounded text-brand-red font-mono">Right Shift</kbd> để cài đặt HUD.</p>
+                                </div>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Section -->
+    <footer class="bg-black/80 border-t border-gray-800 py-12 text-gray-400 text-xs">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
+            <!-- Brand Info -->
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 flex items-center justify-center bg-gray-900 border border-brand-red/40 rounded-lg">
+                    <svg class="w-5 h-5 text-brand-red" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z" />
+                    </svg>
+                </div>
+                <div>
+                    <span class="font-bold text-white tracking-wider">SUAW CLIENT</span>
+                    <p class="text-[10px] text-gray-500">Minecraft 1.21.11 Optimized Mod Client</p>
+                </div>
+            </div>
+
+            <!-- Copyright -->
+            <div>
+                <p>&copy; 2026 Suaw Client. All rights reserved. Not affiliated with Mojang Studios.</p>
+            </div>
+
+            <!-- Social Links -->
+            <div class="flex items-center gap-4 text-base">
+                <a href="#" class="hover:text-brand-red transition-colors"><i class="fa-brands fa-discord"></i></a>
+                <a href="#" class="hover:text-brand-red transition-colors"><i class="fa-brands fa-youtube"></i></a>
+                <a href="#" class="hover:text-brand-red transition-colors"><i class="fa-brands fa-github"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Simple Notification Toast Modal -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 glass-panel border border-brand-red/50 text-white px-5 py-3 rounded-xl flex items-center gap-3 shadow-2xl">
+        <i class="fa-solid fa-circle-check text-brand-red text-lg"></i>
+        <div>
+            <div class="font-bold text-sm" id="toast-title">Đang khởi tạo tải về...</div>
+            <div class="text-xs text-gray-400" id="toast-desc">Tập tin Suaw Client đang được chuẩn bị.</div>
+        </div>
+    </div>
+
+    <!-- Script Handling Mobile Menu and Download Simulator -->
+    <script>
+        // Mobile menu toggle
+        const menuBtn = document.getElementById('menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Download simulation with toast alert
+        function downloadFile(filename) {
+            const toast = document.getElementById('toast');
+            const toastTitle = document.getElementById('toast-title');
+            const toastDesc = document.getElementById('toast-desc');
+
+            toastTitle.innerText = "Đang tải: " + filename;
+            toastDesc.innerText = "Cảm ơn bạn đã lựa chọn Suaw Client v1.21.11!";
+
+            // Show Toast
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            
+            setTimeout(() => {
+                // Hide Toast after 4 seconds
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 4000);
+        }
+    </script>
+</body>
+</html>
